@@ -1,0 +1,52 @@
+name: Docker Image CI - Md to Html to PDF
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy-nextjs:
+    if: github.ref == 'refs/heads/master'
+    runs-on: self-hosted
+
+    environment: next
+
+    env:  
+      APP_BACK_END: ${{ secrets.APP_BACK_END }}
+      NEXT_PUBLIC_APP_BACK_END: ${{ secrets.NEXT_PUBLIC_APP_BACK_END }}
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Crear archivo .env
+        run: |
+          cat > .env <<EOL
+          APP_BACK_END="${{env.APP_BACK_END}}"
+          NEXT_PUBLIC_APP_BACK_END="${{env.NEXT_PUBLIC_APP_BACK_END}}"
+          EOL
+
+      - name: Creando y ejecutando contenedor
+        run: docker compose -f apps/next-app/docker-compose.yml up --build -d
+
+  build-and-deploy-fastapi:
+    if: github.ref == 'refs/heads/master'
+    runs-on: self-hosted
+    environment: fastapi
+
+    env:
+      APP_BACK_END: ${{ secrets.API_HTML_TO_PDF }}
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Crear archivo .env
+        run: |
+          cat > .env <<EOL
+          APP_BACK_END="${{env.APP_BACK_END}}"
+          EOL
+
+      - name: Creando y ejecutando contenedor FastAPI
+        run: docker compose -f apps/fastapi-service/docker-compose.yml up --build -d
