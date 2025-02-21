@@ -1,0 +1,18 @@
+# Versión de la configuración de Docker Compose
+version: '3'
+
+# Definición de servicios
+services:
+  # Servicio para la aplicación principal
+  md-tp-pdf-python-services:
+    # Configuración para construir la imagen del contenedor
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Mapeo de puertos: Mapea el puerto 6002 del host al puerto 80 del contenedor
+    ports:
+      - 8001:80
+    # Nombre del contenedor
+    container_name: md-tp-pdf-python-services
+    # Configuración para reiniciar siempre el contenedor
+    restart: always

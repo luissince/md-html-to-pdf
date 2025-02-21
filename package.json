@@ -1,0 +1,11 @@
+{
+  "name": "md-html-to-pdf",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Xander LS",
+  "license": "MIT",
+  "description": "App to convert markdown or html to pdf"
+}
