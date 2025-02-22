@@ -11,7 +11,7 @@ services:
       context: .
       dockerfile: Dockerfile
     # Nombre de la imagen resultante
-    image: md-tp-pdf-python-image
+    image: md-to-pdf-python-image
     # Conexión a la red llamada 'luis'
     networks:
       - luis
@@ -19,7 +19,7 @@ services:
     ports:
       - 6601:80
     # Nombre del contenedor
-    container_name: md-tp-pdf-python
+    container_name: md-to-pdf-python
     # Configuración para reiniciar siempre el contenedor
     restart: always
 
