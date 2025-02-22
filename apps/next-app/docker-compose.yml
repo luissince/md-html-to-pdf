@@ -16,7 +16,7 @@ services:
       - luis
     # Mapeo de puertos: Mapea el puerto 6600 del host al puerto 3000 del contenedor
     ports:
-      - 6601:3000
+      - 6600:3000
     # Nombre del contenedor
     container_name: md-to-pdf-app
     # Configuración para reiniciar siempre el contenedor
