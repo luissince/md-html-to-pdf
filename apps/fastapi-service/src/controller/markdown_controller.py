@@ -6,6 +6,10 @@ from src.model.base.body import Body
 import re
 import os
 import logging
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
 
 router = APIRouter()
 
