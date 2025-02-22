@@ -38,7 +38,7 @@ jobs:
     environment: fastapi
 
     env:
-      APP_BACK_END: ${{ secrets.API_HTML_TO_PDF }}
+      API_HTML_TO_PDF: ${{ secrets.API_HTML_TO_PDF }}
 
     steps:
       - name: Checkout código
@@ -47,7 +47,7 @@ jobs:
       - name: Crear archivo .env
         run: |
           cat > apps/fastapi-service/.env <<EOL
-          APP_BACK_END="${{env.APP_BACK_END}}"
+          API_HTML_TO_PDF="${{env.API_HTML_TO_PDF}}"
           EOL
 
       - name: Verificar archivo .env
