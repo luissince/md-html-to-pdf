@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   keywords: "mdhtmltopdf, markdown, html, pdf, converter, convert, md to pdf, html to pdf, pdf converter, pdf converter",
   creator: "Luis Lara",
   icons: {
-    icon: 'icon.svg',
-    apple: 'icon.svg',
+    icon: 'favicon.ico',
+    apple: 'favicon.ico',
     // icon: 'https://docs.nestjs.com/assets/logo-small-gradient.svg',
     // apple: 'https://docs.nestjs.com/assets/logo-small-gradient.svg',
   },
