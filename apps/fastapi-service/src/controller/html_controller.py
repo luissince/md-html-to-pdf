@@ -5,8 +5,13 @@ from src.services.html_service import HtmlService
 from src.model.base.body import Body
 import re
 import os
+import logging
 
 router = APIRouter()
+
+# Configurar el registro
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @router.post("/pdf")
 async def pdf(body: Body):
@@ -63,25 +68,29 @@ async def pdf(body: Body):
             headers=headers,
             media_type="application/pdf",
         )
-    except requests.exceptions.HTTPError as errh:
-        print("HTTP Error:", errh)
-        obj = {"code": 500, "message": "HTTP Error"}
+    except requests.exceptions.HTTPError as error:
+        logger.error(f"HTTP Error: {error}")
+        obj = {"code": 500, "message": f"HTTP Error: {str(error)}"}
         return JSONResponse(content=obj, status_code=obj["code"])
+
     except requests.exceptions.ConnectionError as errc:
-        print("Connection Error:", errc)
-        obj = {"code": 500, "message": "Connection Error"}
+        logger.error(f"Connection Error: {errc}")
+        obj = {"code": 500, "message": f"Connection Error: {str(errc)}"}
         return JSONResponse(content=obj, status_code=obj["code"])
+
     except requests.exceptions.Timeout as errt:
-        print("Timeout Error:", errt)
-        obj = {"code": 500, "message": "Timeout Error"}
+        logger.error(f"Timeout Error: {errt}")
+        obj = {"code": 500, "message": f"Timeout Error: {str(errt)}"}
         return JSONResponse(content=obj, status_code=obj["code"])
+
     except requests.exceptions.RequestException as err:
-        print("Other Error:", err)
-        obj = {"code": 500, "message": "Something went wrong"}
+        logger.error(f"Request Exception: {err}")
+        obj = {"code": 500, "message": f"Request Exception: {str(err)}"}
         return JSONResponse(content=obj, status_code=obj["code"])
+
     except Exception as err:
-        print("Other Error:", err)
-        obj = {"code": 500, "message": "Internal Server Error"}
+        logger.error(f"Unexpected Error: {err}", exc_info=True)
+        obj = {"code": 500, "message": f"Internal Server Error: {str(err)}"}
         return JSONResponse(content=obj, status_code=obj["code"])
 
 @router.post("/html")
@@ -93,23 +102,27 @@ async def html(body: Body):
         )
 
         return html
-    except requests.exceptions.HTTPError as errh:
-        print("HTTP Error:", errh)
-        obj = {"code": 500, "message": "HTTP Error"}
+    except requests.exceptions.HTTPError as error:
+        logger.error(f"HTTP Error: {error}")
+        obj = {"code": 500, "message": f"HTTP Error: {str(error)}"}
         return JSONResponse(content=obj, status_code=obj["code"])
+
     except requests.exceptions.ConnectionError as errc:
-        print("Connection Error:", errc)
-        obj = {"code": 500, "message": "Connection Error"}
+        logger.error(f"Connection Error: {errc}")
+        obj = {"code": 500, "message": f"Connection Error: {str(errc)}"}
         return JSONResponse(content=obj, status_code=obj["code"])
+
     except requests.exceptions.Timeout as errt:
-        print("Timeout Error:", errt)
-        obj = {"code": 500, "message": "Timeout Error"}
+        logger.error(f"Timeout Error: {errt}")
+        obj = {"code": 500, "message": f"Timeout Error: {str(errt)}"}
         return JSONResponse(content=obj, status_code=obj["code"])
+
     except requests.exceptions.RequestException as err:
-        print("Other Error:", err)
-        obj = {"code": 500, "message": "Something went wrong"}
+        logger.error(f"Request Exception: {err}")
+        obj = {"code": 500, "message": f"Request Exception: {str(err)}"}
         return JSONResponse(content=obj, status_code=obj["code"])
+
     except Exception as err:
-        print("Other Error:", err)
-        obj = {"code": 500, "message": "Internal Server Error"}
+        logger.error(f"Unexpected Error: {err}", exc_info=True)
+        obj = {"code": 500, "message": f"Internal Server Error: {str(err)}"}
         return JSONResponse(content=obj, status_code=obj["code"])
