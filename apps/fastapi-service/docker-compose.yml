@@ -5,7 +5,7 @@ version: '3'
 # Definición de servicios
 services:
   # Servicio
-  md-tp-pdf-python-services:
+  md-to-pdf-python-services:
     # Configuración para construir la imagen del contenedor
     build:
       context: .
