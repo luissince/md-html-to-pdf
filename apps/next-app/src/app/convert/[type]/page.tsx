@@ -16,14 +16,13 @@ import IframePreview from "@/components/IframePreview"
 import { alertKit } from "alert-kit"
 import { predefinedSizes, templates } from "@/app/lib/templates"
 
-
 export default function ConvertPage({ params }: { params: { type: string } }) {
   const [input, setInput] = useState("")
   const [css, setCss] = useState(templates.css)
   const [paperSize, setPaperSize] = useState<string>("A4")
   const [customSize, setCustomSize] = useState({ width: 210, height: 297 })
   const refCustomSize = useRef<HTMLInputElement>(null)
-  const [margins, setMargins] = useState<Margin>({ top: 10, right: 10, bottom: 10, left: 10 })
+  const [margins, setMargins] = useState<Margin>({ top: 0, right: 0, bottom: 0, left: 0 })
   const [backgroundColor, setBackgroundColor] = useState("#ffffff")
   const [fileName, setFileName] = useState("document")
   const refFileName = useRef<HTMLInputElement>(null)
@@ -105,7 +104,7 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
         margin: margins,
       }
 
-      alertKit.loading({ message: "Converting to HTML..." });
+      alertKit.loading({ bodyMessageClass: ["mt-4"], message: "Converting to HTML..." });
 
       let html = null;
       if (type === "MD") {
@@ -169,18 +168,24 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
     }
 
     try {
+      let newSize = null;
+      if (paperSize === "custom") {
+        newSize = null;
+      } else {
+        newSize = paperSize as "A4" | "mm80" | "mm58";
+      }
 
       const pdf: Pdf = {
         title: fileName || "document",
         content: input,
         css: css,
-        size: null,
-        width: customSize["width"].toString(),
-        height: customSize["height"].toString(),
+        size: newSize,
+        width: newSize ? customSize["width"].toString() : null,
+        height: newSize ? customSize["height"].toString() : null,
         margin: margins,
       }
 
-      alertKit.loading({ message: "Generating PDF..." });
+      alertKit.loading({ bodyMessageClass: ["mt-4"], message: "Generating PDF..." });
 
       let url = null;
       if (type === "MD") {
@@ -196,7 +201,7 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
       link.download = `${fileName || 'document'}.pdf`;
       document.body.appendChild(link);
       link.click();
-  
+
       // Limpia el objeto URL después de la descarga
       window.URL.revokeObjectURL(url);
       link.remove();

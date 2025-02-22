@@ -80,47 +80,74 @@ Thank you for your business!`
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* @page {
+    margin: 0;
+    padding: 0;
+} */
+
+* {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    font-size: 100%;
+}
+
 body {
     font-family: "Roboto", serif;
-    line-height: 1.6;
-    margin: 0 auto;
-    padding: 0;
+    font-weight: normal;
+    background-color: white;
+    color: #000;
+    padding: 0mm;
 }
 
 h1 {
     color: #2c3e50;
-    font-size: 24pt; /* Equivale a ~32px */
-    margin-bottom: 10mm;
+    font-size: 22pt;
+    padding: 5mm 0mm;
     border-bottom: 0.5mm solid #eee;
-    padding-bottom: 5mm;
+    font-weight: bold;
 }
 
 h2 {
     color: #34495e;
     font-size: 18pt;
-    margin-top: 10mm;
-    margin-bottom: 7mm;
+     padding: 3mm 0mm;
+    font-weight: bold;
 }
 
 h3 {
     color: #445566;
     font-size: 14pt;
-    margin-top: 7mm;
+    padding: 3mm 0mm;
+    font-weight: bold;
+}
+
+h4 {
+    color: #445566;
+    font-size: 10pt;
+    padding: 3mm 0mm;
+    font-weight: bold;
 }
 
 p {
-    margin-bottom: 5mm;
+    padding: 3mm 0mm;
     color: #333;
-    font-size: 12pt;
+    font-size: 10pt;
+    font-weight: normal;
 }
 
 ul, ol {
-    margin-bottom: 5mm;
+    padding: 3mm 0mm;
     padding-left: 10mm;
 }
 
 li {
-    margin-bottom: 2mm;
+    padding: 2mm 0mm;
 }
 
 code {
@@ -154,9 +181,9 @@ table {
 
 th, td {
     border: 0.5mm solid #ddd;
-    padding: 3mm;
+    padding: 2mm 0mm;
     text-align: left;
-    font-size: 12pt;
+    font-size: 10pt;
 }
 
 th {
