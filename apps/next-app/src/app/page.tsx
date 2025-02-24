@@ -10,6 +10,7 @@ const examples = [
   { title: "Newsletter", description: "Engaging email newsletter", type: "md", size: "a4" },
   { title: "Receipt", description: "Compact receipt for point of sale", type: "md", size: "80mm" },
   { title: "Ticket", description: "Event or transportation ticket", type: "md", size: "58mm" },
+  { title: "Estimate", description: "Simple, clean estimate template", type: "html", size: "a4" },
 ]
 
 export default function Home() {
@@ -55,7 +56,7 @@ export default function Home() {
               </CardHeader>
               <CardFooter>
                 <Link
-                  href={`/convert/${example.type}?template=${example.title.toLowerCase().replace(" ", "-")}&size=${example.size}`}
+                  href={`/convert/${example.type}?template=${example.title.toLowerCase().replace(" ", "-")}&size=${example.size}&css=css-${example.title.toLowerCase().replace(" ", "-")}`}
                 >
                   <Button variant="outline">Use Template</Button>
                 </Link>

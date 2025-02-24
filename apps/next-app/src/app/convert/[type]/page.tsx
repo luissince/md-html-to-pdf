@@ -30,17 +30,21 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
   const type = params.type.toUpperCase()
   const searchParams = useSearchParams()
   const template = searchParams.get("template")
+  const style = searchParams.get("css")
   const size = searchParams.get("size")
 
   useEffect(() => {
     if (template && templates[template as keyof typeof templates]) {
       setInput(templates[template as keyof typeof templates])
     }
+    if (style && templates[style as keyof typeof templates]) {
+      setCss(templates[style as keyof typeof templates])
+    }
     if (size && predefinedSizes[size as keyof typeof predefinedSizes]) {
       setPaperSize(size)
       setCustomSize(predefinedSizes[size as keyof typeof predefinedSizes])
     }
-  }, [template, size])
+  }, [template, style, size])
 
   const handlePaperSizeChange = (value: string) => {
     setPaperSize(value)
