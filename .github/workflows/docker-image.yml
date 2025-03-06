@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-deploy-nextjs:
     if: github.ref == 'refs/heads/master'
-    runs-on: self-hosted
+    runs-on: next
     environment: next
 
     env:  
@@ -34,7 +34,7 @@ jobs:
 
   build-and-deploy-fastapi:
     if: github.ref == 'refs/heads/master'
-    runs-on: self-hosted
+    runs-on: fastapi
     environment: fastapi
 
     env:
