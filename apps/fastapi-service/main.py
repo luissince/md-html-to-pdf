@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from src.core.config import settings
-from src.controller import markdown_controller, html_controller
+from src.controller import markdown_controller, html_controller, url_controller
 
 load_dotenv()
 
@@ -27,6 +27,7 @@ app.add_middleware(
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(markdown_controller.router, prefix="/markdown", tags=["MarkDown"])
 app.include_router(html_controller.router, prefix="/html", tags=["HTML"])
+app.include_router(url_controller.router, prefix="/url", tags=["URL"])
 
  
 @app.get("/", tags=["root"])

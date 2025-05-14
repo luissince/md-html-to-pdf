@@ -7,6 +7,7 @@ class Body(BaseModel):
     title: str
     content: str
     css: str
+    url: Optional[str] = None
     size: Optional[Size] | None = None
     width: Optional[str] = None
     height: Optional[str] = None

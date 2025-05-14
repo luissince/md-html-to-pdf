@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    image: image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/md-html-to-pdf/md-to-pdf-fastapi:latest
+    container_name: md-to-pdf-fastapi
+    ports:
+      - 6601:80
+    networks:
+      - luis
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "512m"
+        reservations:
+          cpus: "0.25"
+          memory: "256m"
+    restart: always
+    
+networks:
+  luis:
+    external: true

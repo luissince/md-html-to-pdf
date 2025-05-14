@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:fastapi": "cd apps/fastapi-service && ./start-fastapi.sh",
-    "start:next": "cd apps/next-app && npm run dev"
+    "start:nestapi": "cd apps/nestapi-service && npm run dev",
+    "start:next": "cd apps/next-app && npm run dev"    
   },
   "author": "Xander LS",
   "license": "MIT",

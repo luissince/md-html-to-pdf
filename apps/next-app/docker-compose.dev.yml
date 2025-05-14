@@ -1,10 +1,10 @@
 version: '3.8'
 
 services:
-  md-tp-pdf-fastapi-services:
+  app-md-to-pdf-services:
+    container_name: app-md-to-pdf-app
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: md-tp-pdf-fastapi-services
     ports:
-      - 8001:80
+      - 3300:3000

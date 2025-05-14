@@ -307,6 +307,27 @@ th {
     background-color: #f5f5f5;
 }
 
+strong, b {
+    font-weight: bold;
+}
+
+em, i {
+    font-style: italic;
+}
+
+a {
+    color: #2980b9;
+    text-decoration: underline;
+    word-break: break-word;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 5mm auto;
+}
+
 .product {
     display: flex;
     flex-direction: column;
@@ -325,42 +346,57 @@ th {
 }`
 
 const CSS_ESTIMATE= `
-body {
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             color: #333;
             line-height: 2;
         }
+
         .container {
             padding: 20px;
         }
+
         h1, h2, h3 {
             color: #2c3e50;
         }
+
         h1 {
             text-align: center;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
         }
+
         table, th, td {
             border: 1px solid #ddd;
         }
+
         th, td {
             padding: 12px;
             text-align: left;
         }
+
         th {
             background-color: #f0f0f0;
         }
+
+        hr {
+            border: none;
+            border-top: 1mm solid #eee;
+            margin: 4mm 0;
+        }
+
         .highlight {
             background-color: #eafaf1;
             border-left: 4px solid #27ae60;
             padding: 10px;
         }
+
         .footer {
             text-align: center;
             margin-top: 40px;

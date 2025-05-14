@@ -1,22 +1,45 @@
-export const cleanHtml = (rawHtml: string) => {
+/**
+ * Limpia una cadena HTML eliminando caracteres no deseados como comillas, saltos de línea y tabulaciones.
+ *
+ * @param {string} rawHtml - La cadena HTML sin procesar que se va a limpiar.
+ * @returns {string} La cadena HTML limpia sin caracteres no deseados.
+ */
+export function cleanHtml(rawHtml: string): string {
     return rawHtml
-        .replace(/^"(.*)"$/, '$1') // 🔥 Elimina comillas dobles al inicio y final
-        .replace(/\\n/g, '')       // Elimina saltos de línea
-        .replace(/\\"/g, '"')      // Reemplaza comillas escapadas
-        .replace(/\\t/g, '')       // Elimina tabulaciones
+        .replace(/^"(.*)"$/, '$1')
+        .replace(/\\n/g, '')
+        .replace(/\\"/g, '"')
+        .replace(/\\t/g, '')
         .trim();
 };
 
-
-export function isNumeric(valor: any) {
-    return !isNaN(valor) && !isNaN(parseFloat(valor));
+/**
+ * Determina si un valor es numérico.
+ *
+ * @param {any} value - El valor a evaluar.
+ * @returns {boolean} Verdadero si el valor es numérico, falso en caso contrario.
+ */
+export function isNumeric(value: any): boolean {
+    return !isNaN(value) && !isNaN(parseFloat(value));
 }
 
-export function isText(value: any) {
+/**
+ * Determina si un valor es una cadena de texto no vacía.
+ *
+ * @param {any} value - El valor a evaluar.
+ * @returns {boolean} Verdadero si el valor es una cadena de texto no vacía, falso en caso contrario.
+ */
+export function isText(value: any): boolean {
     return typeof value === 'string' && value.trim().length > 0;
 }
 
-export function isEmpty(object: any) {
+/**
+ * Determina si un objeto está vacío.
+ *
+ * @param {any} object - El objeto a evaluar.
+ * @returns {boolean} Verdadero si el objeto está vacío, falso en caso contrario.
+ */
+export function isEmpty(object: any): boolean {
     if (object === null || typeof object === 'undefined') {
         return true;
     }
@@ -34,4 +57,29 @@ export function isEmpty(object: any) {
     }
 
     return false;
+}
+
+/**
+ * Pausa la ejecución durante un tiempo especificado.
+ *
+ * @param {number} time - El tiempo en milisegundos durante el cual se pausará la ejecución.
+ * @returns {Promise<void>} Una promesa que se resuelve después de que haya transcurrido el tiempo especificado.
+ */
+export function sleep(time: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+/**
+ * Valida si una URL es válida.
+ * 
+ * @param {string} url - La URL a validar.
+ * @returns {boolean} Si la url es valida retorna true, de lo contrario retorna false.
+ */
+export function isValidUrl(url: string): boolean {
+    try {
+        new URL(url);
+        return true;
+    } catch (_) {
+        return false;
+    }
 }

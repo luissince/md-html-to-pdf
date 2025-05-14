@@ -16,12 +16,12 @@ const examples = [
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-6">Welcome to MD/HTML to PDF Converter</h1>
-        <p className="text-xl mb-8 max-w-2xl">
-          Convert your Markdown or HTML files to PDF with ease. Choose your preferred conversion method and paper size
-          below.
+      <div className="mb-12 w-full max-w-6xl text-center">
+        <h1 className="text-4xl font-bold mb-6">Welcome to MD/HTML/URL to PDF Converter</h1>
+        <p className="text-xl mb-8">
+          Convert your MD/HTML/URL documents to PDF files with ease. Choose from a variety of templates and styles, or create your own.
         </p>
+
         <div className="flex flex-wrap gap-4 justify-center mb-8">
           <Link href="/convert/md">
             <Button size="lg">Convert MD to PDF</Button>
@@ -31,7 +31,13 @@ export default function Home() {
               Convert HTML to PDF
             </Button>
           </Link>
+          <Link href="/convert/url">
+            <Button size="lg" variant="outline">
+              Convert URL to PDF
+            </Button>
+          </Link>
         </div>
+
         <div className="flex flex-wrap gap-4 justify-center">
           <Badge variant="outline">A4 (210 × 297 mm)</Badge>
           <Badge variant="outline">80mm (Thermal printer)</Badge>

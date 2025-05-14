@@ -26,7 +26,7 @@ async def pdf(body: Body):
         )
 
         # Verifica si la URL de la API está configurada
-        url = os.getenv("API_HTML_TO_PDF") + "/pdf"
+        url = os.getenv("API_HTML_TO_PDF") + "/html-to-pdf"
         if not url:
             return JSONResponse(
                 content={"code": 500, "message": "API_HTML_TO_PDF no configurado"},

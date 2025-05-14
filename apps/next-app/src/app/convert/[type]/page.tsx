@@ -4,20 +4,25 @@ import { useState, useEffect, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Select, SelectItem } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Tabs } from "@/components/ui/tabs"
-import { fetchMarkDownConvertPdf, fetchMarkDownConvertHtml, fetchHtmlConvertPdf, fetchHtmlConvertHtml } from "@/app/lib/data"
-import { Margin, Pdf } from "@/app/lib/definitions"
-import { cleanHtml, isEmpty, isNumeric } from "@/helper/util"
+import { fetchMarkDownConvertPdf, fetchMarkDownConvertHtml, fetchHtmlConvertPdf, fetchHtmlConvertHtml, fetchUrlConvertPdf } from "@/lib/data"
+import { Margin, Pdf } from "@/lib/definitions"
+import { cleanHtml, isEmpty, isNumeric, isValidUrl } from "@/helper/util"
 import IframePreview from "@/components/IframePreview"
 import { alertKit } from "alert-kit"
-import { predefinedSizes, templates } from "@/app/lib/templates"
+import { predefinedSizes, templates } from "@/lib/templates"
+import Editor from "@monaco-editor/react";
 
-export default function ConvertPage({ params }: { params: { type: string } }) {
+interface Params {
+  params: { type: "md" | "html" | "url" }
+}
+
+export default function ConvertPage({ params }: Params) {
   const [input, setInput] = useState("")
+  const refInput = useRef<HTMLInputElement>(null)
   const [css, setCss] = useState(templates.css)
   const [paperSize, setPaperSize] = useState<string>("A4")
   const [customSize, setCustomSize] = useState({ width: 210, height: 297 })
@@ -27,7 +32,7 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
   const [fileName, setFileName] = useState("document")
   const refFileName = useRef<HTMLInputElement>(null)
   const [dataHtml, setDataHtml] = useState("")
-  const type = params.type.toUpperCase()
+  const type = params.type;
   const searchParams = useSearchParams()
   const template = searchParams.get("template")
   const style = searchParams.get("css")
@@ -90,6 +95,17 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
       return;
     }
 
+    if (type === "url" && !isValidUrl(input)) {
+      alertKit.warning({
+        headerStyle: "background-color: white; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;",
+        headerTitle: "MD/HTML to PDF",
+        message: "Please enter a valid URL.",
+      }, () => {
+        refInput.current?.focus();
+      });
+      return;
+    }
+
     try {
       let newSize = null;
       if (paperSize === "custom") {
@@ -102,6 +118,7 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
         title: fileName || "document",
         content: input,
         css: css,
+        url: input,
         size: newSize,
         width: newSize ? customSize["width"].toString() : null,
         height: newSize ? customSize["height"].toString() : null,
@@ -111,9 +128,9 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
       alertKit.loading({ bodyMessageClass: ["mt-4"], message: "Converting to HTML..." });
 
       let html = null;
-      if (type === "MD") {
+      if (type === "md") {
         html = await fetchMarkDownConvertHtml(pdf);
-      } else {
+      } else if (type === "html") {
         html = await fetchHtmlConvertHtml(pdf);
       }
 
@@ -123,7 +140,7 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
         message: "HTLM generated successfully",
       });
 
-      setDataHtml(cleanHtml(html))
+      setDataHtml(type === "url" ? input : cleanHtml(html!))
     } catch (error: unknown) {
       const message = (error as Error).message || "Error generating HTML";
       alertKit.error({
@@ -171,6 +188,17 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
       return;
     }
 
+    if (type === "url" && !isValidUrl(input)) {
+      alertKit.warning({
+        headerStyle: "background-color: white; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;",
+        headerTitle: "MD/HTML to PDF",
+        message: "Please enter a valid URL.",
+      }, () => {
+        refInput.current?.focus();
+      });
+      return;
+    }
+
     try {
       let newSize = null;
       if (paperSize === "custom") {
@@ -183,6 +211,7 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
         title: fileName || "document",
         content: input,
         css: css,
+        url: input,
         size: newSize,
         width: newSize ? customSize["width"].toString() : null,
         height: newSize ? customSize["height"].toString() : null,
@@ -192,10 +221,12 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
       alertKit.loading({ bodyMessageClass: ["mt-4"], message: "Generating PDF..." });
 
       let url = null;
-      if (type === "MD") {
+      if (type === "md") {
         url = await fetchMarkDownConvertPdf(pdf);
-      } else {
+      } else if (type === "html") {
         url = await fetchHtmlConvertPdf(pdf);
+      } else {
+        url = await fetchUrlConvertPdf(pdf);
       }
 
       alertKit.close();
@@ -224,11 +255,11 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
       id: "content",
       label: type,
       content: (
-        <Textarea
-          placeholder={`Paste your ${type} code here`}
-          className="h-[400px]"
+        <Editor
+          height="400px"
+          defaultLanguage={type === "md" ? "markdown" : "html"}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(value) => setInput(value ?? "")}
         />
       ),
     },
@@ -236,11 +267,11 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
       id: "css",
       label: "CSS",
       content: (
-        <Textarea
-          placeholder="Paste your CSS code here"
-          className="h-[400px]"
+        <Editor
+          height="400px"
+          defaultLanguage={"css"}
           value={css}
-          onChange={(e) => setCss(e.target.value)}
+          onChange={(value) => setInput(value ?? "")}
         />
       ),
     },
@@ -249,14 +280,34 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Convert {type} to PDF</h1>
-        <Badge variant="outline">{type}</Badge>
+        <h1 className="text-3xl font-bold">Convert {type.toUpperCase()} to PDF</h1>
+        <Badge variant="outline">{type.toUpperCase()}</Badge>
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col gap-4">
-          <Tabs tabs={tabs} />
+          {type !== "url" ? (
+            <Tabs tabs={tabs} />
+          ) : (
+            <div className="flex flex-col gap-2 mb-4">
+              <h2 className="text-xl font-semibold mb-2">URL</h2>
+              <div className="flex gap-2">
+                <Input
+                  ref={refInput}
+                  id="url"
+                  type="url"
+                  placeholder="https://example.com"
+                  className="flex-1"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                />
+              </div>
+              <p className="text-sm text-muted-foreground">Enter a URL to fetch content for conversion</p>
+            </div>
+          )}
+
           <div className="mb-4">
-            <Label htmlFor="fileName">File Name</Label>
+            <Label htmlFor="fileName" className="mb-2">File Name</Label>
             <Input
               id="fileName"
               ref={refFileName}
@@ -266,6 +317,7 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
               placeholder="Enter file name (without .pdf)"
             />
           </div>
+
           <div className="flex gap-4">
             <Button onClick={handleConvert}>Convert</Button>
             <Button variant="outline" onClick={handleDownload}>
@@ -276,121 +328,134 @@ export default function ConvertPage({ params }: { params: { type: string } }) {
 
         <div>
           <h2 className="text-xl font-semibold mb-4">Preview</h2>
-          <div className="border-b mb-4"></div>
-          <div className="border rounded-md h-[400px] overflow-auto">
-            <IframePreview dataHtml={dataHtml} customSize={customSize} margins={margins} backgroundColor={backgroundColor} />
+
+          <div className="border rounded-md h-[440px] overflow-auto flex justify-center p-10">
+            <IframePreview
+              source={{
+                type: type,
+                content: dataHtml,
+              }}
+              customSize={customSize}
+              margins={margins}
+              backgroundColor={backgroundColor}
+            />
           </div>
         </div>
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <h3 className="text-lg font-semibold mb-2">Paper Size</h3>
-          <Select
-            value={paperSize}
-            onValueChange={handlePaperSizeChange}
-            placeholder="Select paper size"
-            className="w-full md:w-[180px]">
-            <SelectItem value="A4">A4 (210 × 297 mm)</SelectItem>
-            <SelectItem value="80mm">80mm (Thermal printer)</SelectItem>
-            <SelectItem value="58mm">58mm (Thermal printer)</SelectItem>
-            <SelectItem value="custom">Custom</SelectItem>
-          </Select>
-          {paperSize === "custom" && (
-            <div className="mt-2 grid grid-cols-2 gap-2">
+          <h3 className="text-lg font-semibold mb-2">Document Settings</h3>
+          <div className="mb-4">
+            <Label htmlFor="paperSize" className="mb-2">Paper Size</Label>
+            <Select
+              value={paperSize}
+              onValueChange={handlePaperSizeChange}
+              placeholder="Select paper size"
+              className="w-full md:w-[180px]">
+              <SelectItem value="A4">A4 (210 × 297 mm)</SelectItem>
+              <SelectItem value="80mm">80mm (Thermal printer)</SelectItem>
+              <SelectItem value="58mm">58mm (Thermal printer)</SelectItem>
+              <SelectItem value="custom">Custom</SelectItem>
+            </Select>
+            {paperSize === "custom" && (
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <div>
+                  <Label htmlFor="width">Width (mm)</Label>
+                  <Input
+                    id="width"
+                    ref={refCustomSize}
+                    type="number"
+                    value={customSize.width}
+                    onChange={(e) => setCustomSize({ ...customSize, width: Number(e.target.value) })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="height">Height (mm)</Label>
+                  <Input
+                    id="height"
+                    type="number"
+                    value={customSize.height}
+                    onChange={(e) => setCustomSize({ ...customSize, height: Number(e.target.value) })}
+                  />
+                </div>
+              </div>
+            )}
+            <div className="mt-4">
+              <Label>Print Area</Label>
+              <p className="text-sm text-muted-foreground">
+                {paperSize !== "custom"
+                  ? `${predefinedSizes[paperSize as keyof typeof predefinedSizes].printWidth} × ${predefinedSizes[paperSize as keyof typeof predefinedSizes].printHeight} mm`
+                  : "Varies based on margins"}
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Margins (mm)</h3>
+            <div className="grid grid-cols-2 gap-2">
               <div>
-                <Label htmlFor="width">Width (mm)</Label>
+                <Label htmlFor="marginTop" className="mb-2">Top</Label>
                 <Input
-                  id="width"
-                  ref={refCustomSize}
+                  id="marginTop"
                   type="number"
-                  value={customSize.width}
-                  onChange={(e) => setCustomSize({ ...customSize, width: Number(e.target.value) })}
+                  value={margins.top}
+                  onChange={(e) => setMargins({ ...margins, top: Number(e.target.value) })}
                 />
               </div>
               <div>
-                <Label htmlFor="height">Height (mm)</Label>
+                <Label htmlFor="marginRight" className="mb-2">Right</Label>
                 <Input
-                  id="height"
+                  id="marginRight"
                   type="number"
-                  value={customSize.height}
-                  onChange={(e) => setCustomSize({ ...customSize, height: Number(e.target.value) })}
+                  value={margins.right}
+                  onChange={(e) => setMargins({ ...margins, right: Number(e.target.value) })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="marginBottom" className="mb-2">Bottom</Label>
+                <Input
+                  id="marginBottom"
+                  type="number"
+                  value={margins.bottom}
+                  onChange={(e) => setMargins({ ...margins, bottom: Number(e.target.value) })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="marginLeft" className="mb-2">Left</Label>
+                <Input
+                  id="marginLeft"
+                  type="number"
+                  value={margins.left}
+                  onChange={(e) => setMargins({ ...margins, left: Number(e.target.value) })}
                 />
               </div>
             </div>
-          )}
-          <div className="mt-4">
-            <Label>Print Area</Label>
-            <p className="text-sm text-muted-foreground">
-              {paperSize !== "custom"
-                ? `${predefinedSizes[paperSize as keyof typeof predefinedSizes].printWidth} × ${predefinedSizes[paperSize as keyof typeof predefinedSizes].printHeight} mm`
-                : "Varies based on margins"}
-            </p>
           </div>
         </div>
+
         <div>
-          <h3 className="text-lg font-semibold mb-2">Margins (mm)</h3>
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label htmlFor="marginTop">Top</Label>
+          <h3 className="text-lg font-semibold mb-2">Background Color</h3>
+          <div className="flex items-center gap-2">
+            <div className="w-12 h-12 p-1">
               <Input
-                id="marginTop"
-                type="number"
-                value={margins.top}
-                onChange={(e) => setMargins({ ...margins, top: Number(e.target.value) })}
+                type="color"
+                value={backgroundColor}
+                onChange={(e) => setBackgroundColor(e.target.value)}
+                className="h-full"
               />
             </div>
-            <div>
-              <Label htmlFor="marginRight">Right</Label>
+            <div className="w-28">
               <Input
-                id="marginRight"
-                type="number"
-                value={margins.right}
-                onChange={(e) => setMargins({ ...margins, right: Number(e.target.value) })}
+                type="text"
+                value={backgroundColor}
+                onChange={(e) => setBackgroundColor(e.target.value)}
+                className="w-28"
               />
             </div>
-            <div>
-              <Label htmlFor="marginBottom">Bottom</Label>
-              <Input
-                id="marginBottom"
-                type="number"
-                value={margins.bottom}
-                onChange={(e) => setMargins({ ...margins, bottom: Number(e.target.value) })}
-              />
-            </div>
-            <div>
-              <Label htmlFor="marginLeft">Left</Label>
-              <Input
-                id="marginLeft"
-                type="number"
-                value={margins.left}
-                onChange={(e) => setMargins({ ...margins, left: Number(e.target.value) })}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <h3 className="text-lg font-semibold mb-2">Background Color</h3>
-        <div className="flex items-center gap-2">
-          <div className="w-12 h-12 p-1">
-            <Input
-              type="color"
-              value={backgroundColor}
-              onChange={(e) => setBackgroundColor(e.target.value)}
-              className="h-full"
-            />
-          </div>
-          <div className="w-28">
-            <Input
-              type="text"
-              value={backgroundColor}
-              onChange={(e) => setBackgroundColor(e.target.value)}
-              className="w-28"
-            />
           </div>
         </div>
       </div>
     </div>
   )
 }
-

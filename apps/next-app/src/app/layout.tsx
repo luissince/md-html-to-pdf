@@ -9,12 +9,12 @@ import Footer from "@/components/footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "MD/HTML to PDF Converter",
-  description: "Convert Markdown or HTML to PDF easily",
+  title: "MD/HTML/URL to PDF Converter",
+  description: "Convert Markdown/HTML/URL to PDF easily",
   applicationName: "mdhtmltopdf",
   authors: {"name": "Xander LS", "url": "https://xanderls.dev/"},
-  keywords: "mdhtmltopdf, markdown, html, pdf, converter, convert, md to pdf, html to pdf, pdf converter, pdf converter",
-  creator: "Luis Lara",
+  keywords: "mdhtmltopdf, markdown, html, url, pdf, converter, convert, md to pdf, html to pdf, url to pdf, pdf converter",
+  creator: "Xander LS",
   icons: {
     icon: 'favicon.ico',
     apple: 'favicon.ico',
