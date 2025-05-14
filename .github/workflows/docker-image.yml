@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-nestjs:
-    name: Build Backe-End (NestJs)
+    name: Build Back-End (NestJs)
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     environment: nestjs
@@ -44,7 +44,7 @@ jobs:
         run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/md-html-to-pdf/md-to-pdf-nest:latest
 
   build-fastapi:
-    name: Build Backe-End (FastApi)
+    name: Build Back-End (FastApi)
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     environment: fastapi
