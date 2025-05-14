@@ -103,9 +103,6 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Descargar imagen desde ECR
-        run: docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/md-html-to-pdf/md-to-pdf-nest:latest
-
       - name: Crear y ejecutar contenedor en producción
         run: docker compose -f apps/nestapi-service/docker-compose.prod.yml up -d
       
@@ -138,86 +135,80 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Descargar imagen desde ECR
-        run: docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/md-html-to-pdf/md-to-pdf-fastapi:latest
-
       - name: Crear y ejecutar contenedor en producción
         run: docker compose -f apps/fastapi-service/docker-compose.prod.yml up -d
       
       - name: Eliminar imágenes locales
         run: docker image prune -af || true
 
-  # build-nextjs:
-  #   name: Build Front-End (NextJs)
-  #   if: github.ref == 'refs/heads/master'
-  #   runs-on: ubuntu-latest
-  #   needs: ["deploy-nestapi", "deploy-fastapi"]
-  #   environment: next
+  build-nextjs:
+    name: Build Front-End (NextJs)
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: ["deploy-nestapi", "deploy-fastapi"]
+    environment: next
 
-  #   steps:
-  #     - name: Checkout código
-  #       uses: actions/checkout@v3
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
 
-  #     - name: Crear archivo .env
-  #       run: |
-  #         cat > apps/next-app/.env <<EOL
-  #         APP_BACK_END="${{secrets.APP_BACK_END}}"
-  #         NEXT_PUBLIC_APP_BACK_END="${{secrets.NEXT_PUBLIC_APP_BACK_END}}"
-  #         EOL
+      - name: Crear archivo .env
+        run: |
+          cat > apps/next-app/.env <<EOL
+          APP_BACK_END="${{secrets.APP_BACK_END}}"
+          NEXT_PUBLIC_APP_BACK_END="${{secrets.NEXT_PUBLIC_APP_BACK_END}}"
+          EOL
 
-  #     - name: Construyendo contenedor NextJs
-  #       run: docker compose -f apps/next-app/docker-compose.build.yml build
+      - name: Construyendo contenedor NextJs
+        run: docker compose -f apps/next-app/docker-compose.build.yml build
 
-  #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v2
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: ${{ secrets.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-  #     - name: Login to Amazon ECR
-  #       uses: aws-actions/amazon-ecr-login@v1 
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1 
 
-  #     - name: Tag front-end image
-  #       run: docker tag md-to-pdf-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/md-html-to-pdf/md-to-pdf-app:latest
+      - name: Tag front-end image
+        run: docker tag md-to-pdf-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/md-html-to-pdf/md-to-pdf-app:latest
 
-  #     - name: Push front-end image to ECR
-  #       run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/md-html-to-pdf/md-to-pdf-app:latest
+      - name: Push front-end image to ECR
+        run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/md-html-to-pdf/md-to-pdf-app:latest
 
-  # deploy-nextjs:
-  #   name: Deploy Front-End (NextJs)
-  #   if: github.ref == 'refs/heads/master'
-  #   runs-on: self-hosted
-  #   needs: "build-nextjs"
+  deploy-nextjs:
+    name: Deploy Front-End (NextJs)
+    if: github.ref == 'refs/heads/master'
+    runs-on: self-hosted
+    needs: build-nextjs
 
-  #   environment: next
+    environment: next
 
-  #   env:
-  #     AWS_REGION: ${{ secrets.AWS_REGION }}
-  #     AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
-  #   steps:
-  #     - name: Checkout código
-  #       uses: actions/checkout@v3
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
 
-  #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v2
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: ${{ secrets.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-  #     - name: Login to Amazon ECR
-  #       uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
 
-  #     - name: Descargar imagen desde ECR
-  #       run: docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/md-html-to-pdf/md-to-pdf-app:latest
-
-  #     - name: Crear y ejecutar contenedor en producción
-  #       run: docker compose -f apps/next-app/docker-compose.prod.yml up -d
+      - name: Crear y ejecutar contenedor en producción
+        run: docker compose -f apps/next-app/docker-compose.prod.yml up -d
       
-  #     - name: Eliminar imágenes locales
-  #       run: docker image prune -af || true
+      - name: Eliminar imágenes locales
+        run: docker image prune -af || true
 
   clean-ecr-images:
     name: Borrar imágenes antiguas de ECR
