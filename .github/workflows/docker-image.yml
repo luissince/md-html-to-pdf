@@ -145,7 +145,7 @@ jobs:
     name: Build Front-End (NextJs)
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
-    needs: ["deploy-nestapi", "deploy-fastapi"]
+    needs: ["deploy-nestjs", "deploy-fastapi"]
     environment: next
 
     steps:
