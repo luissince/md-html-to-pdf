@@ -222,7 +222,7 @@ jobs:
   clean-ecr-images:
     name: Borrar imágenes antiguas de ECR
     runs-on: ubuntu-latest
-    needs: [build-and-deploy-nextjs, build-and-deploy-fastapi, build-and-deploy-nestapi]
+    needs: [build-and-deploy-fastapi, build-and-deploy-nestapi]
     steps:
       - name: Configurar credenciales AWS
         uses: aws-actions/configure-aws-credentials@v2
