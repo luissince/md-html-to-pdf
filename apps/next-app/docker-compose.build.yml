@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   app:
+    image: md-to-pdf-app
     build:
       context: .
       dockerfile: Dockerfile

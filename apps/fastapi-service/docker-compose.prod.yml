@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/md-html-to-pdf/md-to-pdf-fastapi:latest
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/md-html-to-pdf/md-to-pdf-fastapi:latest
     container_name: md-to-pdf-fastapi
     ports:
       - 6601:80
