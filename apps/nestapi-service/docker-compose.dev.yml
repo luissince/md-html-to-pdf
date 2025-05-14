@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  md-to-pdf-nest-services:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: md-to-pdf-nest
+    ports:
+      - "8000:8000"
