@@ -3,6 +3,7 @@ version: '3.8'
 
 services:
   app:
+    image: md-to-pdf-fastapi
     build:
       context: .
       dockerfile: Dockerfile
