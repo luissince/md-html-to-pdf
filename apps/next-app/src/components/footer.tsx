@@ -67,7 +67,7 @@ export default function Footer() {
         </div>
         <div className="mt-8 pt-8 border-t text-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} MD/HTML to PDF Converter. Created by <a href="https://xanderls.dev/" target="_blank"  className="text-muted-foreground hover:text-foreground">Xander LS</a>.
+            © {new Date().getFullYear()} MD/HTML to PDF Converter V 1.0.0. Created by <a href="https://xanderls.dev/" target="_blank"  className="text-muted-foreground hover:text-foreground">Xander LS</a>.
           </p>
         </div>
       </div>
