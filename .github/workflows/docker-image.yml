@@ -103,6 +103,9 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Descargar imagen desde ECR
+        run: docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/md-html-to-pdf/md-to-pdf-nest:latest
+
       - name: Crear y ejecutar contenedor en producción
         run: docker compose -f apps/nestapi-service/docker-compose.prod.yml up -d
       
