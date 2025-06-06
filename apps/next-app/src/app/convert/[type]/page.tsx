@@ -257,7 +257,7 @@ export default function ConvertPage({ params }: Params) {
       content: (
         <Editor
           height="400px"
-          defaultLanguage={type === "md" ? "markdown" : "html"}
+          language={type === "md" ? "markdown" : "html"}
           value={input}
           onChange={(value) => setInput(value ?? "")}
         />
@@ -271,7 +271,7 @@ export default function ConvertPage({ params }: Params) {
           height="400px"
           defaultLanguage={"css"}
           value={css}
-          onChange={(value) => setInput(value ?? "")}
+          onChange={(value) => setCss(value ?? "")}
         />
       ),
     },
