@@ -23,7 +23,7 @@ interface Params {
 export default function ConvertPage({ params }: Params) {
   const [input, setInput] = useState("")
   const refInput = useRef<HTMLInputElement>(null)
-  const [css, setCss] = useState(templates.css)
+  const [css, setCss] = useState(params.type === "md" ? templates.cssMs : templates.css)
   const [paperSize, setPaperSize] = useState<string>("A4")
   const [customSize, setCustomSize] = useState({ width: 210, height: 297 })
   const refCustomSize = useRef<HTMLInputElement>(null)
