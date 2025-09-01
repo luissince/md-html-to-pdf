@@ -1,11 +1,9 @@
-version: '3.8'
-
 services:
   app:    
     image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/md-html-to-pdf/md-to-pdf-app:latest
     container_name: md-to-pdf-app
-    ports:
-      - 6600:3000
+    # ports:
+    #   - 6600:3000
     networks:
       - luis
     deploy:

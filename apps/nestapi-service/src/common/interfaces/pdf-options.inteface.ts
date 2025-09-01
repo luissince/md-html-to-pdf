@@ -8,5 +8,5 @@ export interface PdfOptions {
   margin?: Margin;
   waitUntil?: 'load' | 'domcontentloaded' | 'networkidle';
   timeout?: number;
-  emulateMedia?: 'screen' | 'print'
+  emulateMedia?: 'screen' | 'print';
 }

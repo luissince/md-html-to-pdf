@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app-md-to-pdf-services:
     container_name: app-md-to-pdf-app

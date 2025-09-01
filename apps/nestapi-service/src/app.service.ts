@@ -1,12 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { generatePDFFromHTML, generatePDFFromURL, sendPdfResponse } from './helper/pdf.helper';
+import { generatePDFFromHTML, generatePDFFromURL } from './helper/pdf.helper';
 import PdfDto from './common/class/dto/pdf.class.dto';
 import { SizePaper, SizePrint } from './common/enums/size.enum';
 import { PdfOptions } from './common/interfaces/pdf-options.inteface';
 
 @Injectable()
 export class AppService {
-
   async htmlToPdf(body: PdfDto) {
     try {
       let width: SizePaper | SizePrint | string = SizePaper.A4;
@@ -36,7 +35,7 @@ export class AppService {
     } catch (error) {
       throw new HttpException(
         error.message || 'Error in generating PDF',
-        error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR
+        error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -62,7 +61,7 @@ export class AppService {
       if (!url) {
         throw new HttpException(
           'URL parameter is required.',
-          HttpStatus.BAD_REQUEST
+          HttpStatus.BAD_REQUEST,
         );
       }
 
@@ -79,7 +78,7 @@ export class AppService {
     } catch (error) {
       throw new HttpException(
         error.message || 'Error in generating PDF',
-        error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR
+        error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -335,6 +334,4 @@ export class AppService {
       );
     }
   }
-
-
 }

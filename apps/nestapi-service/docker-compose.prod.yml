@@ -1,11 +1,9 @@
-version: '3.8'
-
 services:
   app:
     image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/md-html-to-pdf/md-to-pdf-nest:latest
     container_name: md-to-pdf-nest
-    ports:
-      - 6602:80
+    # ports:
+    #   - 6602:80
     networks:
       - luis
     deploy:

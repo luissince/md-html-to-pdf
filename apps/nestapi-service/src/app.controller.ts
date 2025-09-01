@@ -9,17 +9,17 @@ import {
 import { Response } from 'express';
 import { AppService } from './app.service';
 import { ApiTags } from '@nestjs/swagger';
-import { sendPdfResponse } from './helper/pdf.helper';
 import PdfDto from './common/class/dto/pdf.class.dto';
+import { sendPdfResponse } from './handlers/pdf-response.handler';
 
 @ApiTags('Root')
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService) {}
 
   @Get()
   main(): string {
-    return "Service is running";
+    return 'Service is running';
   }
 
   @Post('/html-to-pdf')

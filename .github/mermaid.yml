@@ -1,0 +1,48 @@
+# GitHub Actions workflow para renderizar diagramas Mermaid
+# Este archivo permite que GitHub renderice automáticamente los diagramas Mermaid en los archivos Markdown
+
+name: Render Mermaid Diagrams
+
+on:
+  push:
+    paths:
+      - '**/*.md'
+      - '**/*.mermaid'
+  pull_request:
+    paths:
+      - '**/*.md'
+      - '**/*.mermaid'
+
+jobs:
+  render-mermaid:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          npm install -g @mermaid-js/mermaid-cli
+
+      - name: Render Mermaid diagrams
+        run: |
+          # Encontrar todos los archivos Markdown con diagramas Mermaid
+          find . -name "*.md" -exec grep -l "```mermaid" {} \; | while read file; do
+            echo "Processing $file"
+            # Extraer diagramas Mermaid y renderizarlos
+            mkdir -p "docs/images"
+            mmdc -i "$file" -o "docs/images/$(basename "$file" .md)_diagram.png" -b transparent
+          done
+
+      - name: Commit rendered diagrams
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/images/
+          git commit -m "Update Mermaid diagrams" || echo "No changes to commit"
+          git push || echo "No changes to push"

@@ -238,7 +238,7 @@ jobs:
         run: |
           REPO="md-html-to-pdf/md-to-pdf-app"
 
-           # 1. Obtener todas las imágenes (excepto latest)
+            # 1. Obtener todas las imágenes (excepto latest)
             aws ecr list-images --repository-name $REPO \
               --query 'imageIds[?type(imageTag)==`null` || imageTag!=`latest`]' \
               --output json > images.json

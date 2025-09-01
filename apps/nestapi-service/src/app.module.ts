@@ -5,9 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
-  ],
+  imports: [ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' })],
   controllers: [AppController],
   providers: [AppService],
 })
