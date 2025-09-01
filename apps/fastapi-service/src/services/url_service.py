@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 async def pdf(body: Body):
     try:
-         # Verifica si la URL de la API está configurada
+        # Verifica si la URL de la API está configurada
         url = os.getenv("API_HTML_TO_PDF") + "/url-to-pdf"
         if not url:
             return JSONResponse(
@@ -33,7 +33,7 @@ async def pdf(body: Body):
             "margin": body.margin.__dict__,
         }
         
-         # Cabeceras
+        # Cabeceras
         headers = {
             "Content-Type": "application/json",
         }
@@ -44,7 +44,7 @@ async def pdf(body: Body):
 
         content_type = response.headers.get("Content-Type", "")
         
-         # Nombre del archivo desde la respuesta
+        # Nombre del archivo desde la respuesta
         content_disposition = response.headers.get("Content-Disposition", "")
         match = re.search(r'filename="?([^";]+)"?', content_disposition)
         filename = match.group(1).strip() if match else "documento.pdf"

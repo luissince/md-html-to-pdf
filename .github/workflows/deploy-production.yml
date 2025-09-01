@@ -35,7 +35,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1 
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Tag back-end image
         run: docker tag md-to-pdf-nest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/md-html-to-pdf/md-to-pdf-nest:latest
@@ -69,7 +69,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1 
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Tag front-end image
         run: docker tag md-to-pdf-fastapi ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/md-html-to-pdf/md-to-pdf-fastapi:latest
@@ -108,7 +108,7 @@ jobs:
 
       - name: Crear y ejecutar contenedor en producción
         run: docker compose -f apps/nestapi-service/docker-compose.prod.yml up -d
-      
+
       - name: Eliminar imágenes locales
         run: docker image prune -af || true
 
@@ -143,7 +143,7 @@ jobs:
 
       - name: Crear y ejecutar contenedor en producción
         run: docker compose -f apps/fastapi-service/docker-compose.prod.yml up -d
-      
+
       - name: Eliminar imágenes locales
         run: docker image prune -af || true
 
@@ -176,7 +176,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1 
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Tag front-end image
         run: docker tag md-to-pdf-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/md-html-to-pdf/md-to-pdf-app:latest
@@ -215,14 +215,14 @@ jobs:
 
       - name: Crear y ejecutar contenedor en producción
         run: docker compose -f apps/next-app/docker-compose.prod.yml up -d
-      
+
       - name: Eliminar imágenes locales
         run: docker image prune -af || true
 
   clean-ecr-images:
-    name: Borrar imágenes antiguas de ECR
+    name: Delete old images
     runs-on: ubuntu-latest
-    needs: [build-fastapi, build-nestjs]
+    needs: deploy-nextjs
     steps:
       - name: Configurar credenciales AWS
         uses: aws-actions/configure-aws-credentials@v2
@@ -283,4 +283,3 @@ jobs:
             else
               echo "No hay imágenes antiguas para borrar en $REPO"
             fi
-  
